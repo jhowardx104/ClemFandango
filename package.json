@@ -1,5 +1,18 @@
 {
   "dependencies": {
-    "discord.js": "^14.14.1"
-  }
+    "@types/node": "^20.11.21",
+    "discord.js": "^14.14.1",
+    "typescript": "^5.3.3"
+  },
+  "name": "clemfandango",
+  "description": "A Discord bot that helps me out with things",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node dist/src/bot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
