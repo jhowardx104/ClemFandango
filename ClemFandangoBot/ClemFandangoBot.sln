@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClemFandangoBot", "ClemFandangoBot\ClemFandangoBot.csproj", "{753A75DC-4F82-4B90-A3D5-5BF0AC382097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClemFandango.Common", "ClemFandango.Common\ClemFandango.Common.csproj", "{D9653EBA-0058-4412-BDB8-605B76771905}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{753A75DC-4F82-4B90-A3D5-5BF0AC382097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{753A75DC-4F82-4B90-A3D5-5BF0AC382097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{753A75DC-4F82-4B90-A3D5-5BF0AC382097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{753A75DC-4F82-4B90-A3D5-5BF0AC382097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9653EBA-0058-4412-BDB8-605B76771905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9653EBA-0058-4412-BDB8-605B76771905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9653EBA-0058-4412-BDB8-605B76771905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9653EBA-0058-4412-BDB8-605B76771905}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
