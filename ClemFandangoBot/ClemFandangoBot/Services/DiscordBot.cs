@@ -1,22 +1,35 @@
-﻿using ClemFandango.Common.Logging.Interfaces;
+﻿using System.Reflection;
+using ClemFandango.Common.Logging.Interfaces;
+using ClemFandangoBot.Options;
 using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 namespace ClemFandangoBot.Services;
 
 public class DiscordBot: IDiscordBot
 {
+    private readonly DiscordOptions _options;
     private readonly DiscordSocketClient _client;
-    private readonly CommandService _commands;
+    private readonly InteractionService _interactionService;
     private readonly ILogger _logger;
 
-    public DiscordBot(DiscordSocketClient client, CommandService commandService, ILogger logger)
+    public DiscordBot(DiscordOptions options, DiscordSocketClient client, InteractionService interactionService, ILogger logger)
     {
+        _options = options ?? throw new ArgumentNullException(nameof(options));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _commands = commandService ?? throw new ArgumentNullException(nameof(commandService));
+        _interactionService = interactionService ?? throw new ArgumentNullException(nameof(interactionService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        InstallCommandsAsync().Wait();
+        InitializeClientAsync().Wait();
+    }
+
+    private async Task InitializeClientAsync()
+    {
+        _client.Log += LogAsync;
+        _client.Ready += ReadyAsync;
+        _client.SlashCommandExecuted += SlashCommandHandler;
+        await _client.LoginAsync(TokenType.Bot, _options.Token);
     }
     
     public async Task LogAsync(LogMessage message)
@@ -49,35 +62,14 @@ public class DiscordBot: IDiscordBot
     {
         _logger.Info("Discord client is ready.");
     }
-
-    public async Task MessageReceivedAsync(SocketMessage messageParam)
+    
+    public Task SlashCommandHandler(SocketSlashCommand command)
     {
-        //_logger.Info("Message received: " + message.Content);
-        var message = messageParam as SocketUserMessage;
-        if (message == null) return;
-
-        // Create a number to track where the prefix ends and the command begins
-        int argPos = 0;
-
-        // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-        if (!(message.HasCharPrefix('!', ref argPos) || 
-              message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
-            message.Author.IsBot)
-            return;
-
-        // Create a WebSocket-based command context based on the message
-        var context = new SocketCommandContext(_client, message);
-
-        // Execute the command with the command context we just
-        // created, along with the service provider for precondition checks.
-        await _commands.ExecuteAsync(
-            context: context, 
-            argPos: argPos,
-            services: null);
+        throw new NotImplementedException();
     }
 
-    public async Task InstallCommandsAsync()
+    public void Dispose()
     {
-        
+        _client.Dispose();
     }
 }

@@ -22,11 +22,9 @@
       <None Update="Secrets\discord.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-    </ItemGroup>
-
-
-    <ItemGroup>
-      <Folder Include="Services\Commands\" />
+      <None Update="Secrets\discord_example.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 

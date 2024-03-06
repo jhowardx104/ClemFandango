@@ -3,6 +3,8 @@ using ClemFandango.Common.IO.Json;
 using ClemFandangoBot.Options;
 using ClemFandangoBot.Services;
 using Discord;
+using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,30 +14,42 @@ public static class Startup
 {
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddSingleton(JsonParser.Parse<DiscordOptions>("./Secrets/discord.json"));
-        services.AddSingleton<IDiscordBot, DiscordBot>();
-        services.ConfigureDiscordSocketClient();
+        /* REGISTER OPTIONS */
+        var discordOptions = JsonParser.Parse<DiscordOptions>("./Secrets/discord.json");
+        services.AddSingleton(discordOptions);
+        
+        /* REGISTER LOGGER */
         services.AddConsoleLogger();
+        
+        /* REGISTER DISCORD BOT */
+        services.ConfigureDiscordBot();
     }
 
-    private static void ConfigureDiscordSocketClient(this IServiceCollection services)
+    private static void ConfigureDiscordBot(this IServiceCollection services)
     {
-        services.AddSingleton<IDiscordClient>(provider =>
+        var discordConfig = new DiscordSocketConfig
         {
-            var discordOptions = provider.GetRequiredService<DiscordOptions>();
-            var client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                AlwaysDownloadUsers = true,
-                LogLevel = LogSeverity.Debug,
-            });
-            var discordBot = provider.GetRequiredService<IDiscordBot>();
-            client.Log += discordBot.LogAsync;
-            client.Ready += discordBot.ReadyAsync;
-            client.MessageReceived += discordBot.MessageReceivedAsync;
+            AlwaysDownloadUsers = true,
+            LogLevel = LogSeverity.Debug,
+        };
+        
+        var interactionServiceConfig = new InteractionServiceConfig
+        {
+            LogLevel = LogSeverity.Debug,
+        };
 
-            client.LoginAsync(TokenType.Bot, discordOptions.Token).Wait();
-            client.StartAsync().Wait();
-            return client;
-        });
+        services
+            .AddSingleton(discordConfig)
+            .AddSingleton<IDiscordClient, DiscordSocketClient>()
+            .AddSingleton<DiscordSocketClient>()
+            .AddSingleton(interactionServiceConfig)
+            .AddSingleton<InteractionService>();
+        
+        services.AddSingleton<IDiscordBot, DiscordBot>();
+    }
+    
+    private static void RegisterSlashCommands(this IServiceCollection services)
+    {
+        
     }
 }

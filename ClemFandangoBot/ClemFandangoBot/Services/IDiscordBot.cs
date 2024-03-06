@@ -3,10 +3,9 @@ using Discord.WebSocket;
 
 namespace ClemFandangoBot.Services;
 
-public interface IDiscordBot
+public interface IDiscordBot: IDisposable
 {
     Task LogAsync(LogMessage message);
     Task ReadyAsync();
-    Task MessageReceivedAsync(SocketMessage message);
-    Task InstallCommandsAsync();
+    Task SlashCommandHandler(SocketSlashCommand command);
 }

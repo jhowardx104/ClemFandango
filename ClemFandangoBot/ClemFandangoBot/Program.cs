@@ -9,6 +9,6 @@ var services = new ServiceCollection();
 services.ConfigureServices();
 
 var serviceProvider = services.BuildServiceProvider();
-var client = serviceProvider.GetRequiredService<IDiscordClient>();
+var client = serviceProvider.GetRequiredService<IDiscordBot>();
 await Task.Delay(-1);
 client.Dispose();
