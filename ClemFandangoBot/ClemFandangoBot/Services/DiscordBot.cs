@@ -30,6 +30,7 @@ public class DiscordBot: IDiscordBot
         _client.Ready += ReadyAsync;
         _client.SlashCommandExecuted += SlashCommandHandler;
         await _client.LoginAsync(TokenType.Bot, _options.Token);
+        await _client.StartAsync();
     }
     
     public async Task LogAsync(LogMessage message)
