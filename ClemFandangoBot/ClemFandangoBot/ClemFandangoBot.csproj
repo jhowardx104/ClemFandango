@@ -18,5 +18,12 @@
     </ItemGroup>
 
 
+    <ItemGroup>
+      <None Update="Secrets\discord.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+
 
 </Project>

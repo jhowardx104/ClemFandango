@@ -1,9 +1,11 @@
-﻿namespace ClemFandangoBot.Services;
+﻿using Discord;
+using Discord.WebSocket;
+
+namespace ClemFandangoBot.Services;
 
 public interface IDiscordBot
 {
-    Task ConnectAsync();
-    Task DisconnectAsync();
-    Task SendMessageAsync(string message);
-    Task ProcessMessageAsync(string message);
+    Task LogAsync(LogMessage message);
+    Task ReadyAsync();
+    Task MessageReceivedAsync(SocketMessage message);
 }

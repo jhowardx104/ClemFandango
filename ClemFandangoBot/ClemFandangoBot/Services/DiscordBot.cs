@@ -1,27 +1,45 @@
 ﻿using ClemFandango.Common.Logging.Interfaces;
+using Discord;
+using Discord.WebSocket;
 
 namespace ClemFandangoBot.Services;
 
 public class DiscordBot(ILogger logger): IDiscordBot
 {
     private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    public async Task ConnectAsync()
+    public async Task LogAsync(LogMessage message)
     {
-        _logger.Info("connected...");
+        switch (message.Severity)
+        {
+            case LogSeverity.Info:
+                _logger.Info(message.Message, message.Exception);
+                break;
+            case LogSeverity.Critical:
+                _logger.Critical(message.Message, message.Exception);
+                break;
+            case LogSeverity.Error:
+                _logger.Error(message.Message, message.Exception);
+                break;
+            case LogSeverity.Warning:
+                _logger.Warn(message.Message, message.Exception);
+                break;
+            case LogSeverity.Verbose:
+            case LogSeverity.Debug:
+                _logger.Debug(message.Message, message.Exception);
+                break;
+            default:
+                _logger.Error(message.Message);
+                break;
+        }
     }
 
-    public async Task DisconnectAsync()
+    public async Task ReadyAsync()
     {
-        _logger.Info("disconnected...");
+        _logger.Info("Discord client is ready.");
     }
 
-    public async Task SendMessageAsync(string message)
+    public async Task MessageReceivedAsync(SocketMessage message)
     {
-        _logger.Info($"sending message: {message}");
-    }
-
-    public async Task ProcessMessageAsync(string message)
-    {
-        _logger.Info($"processing message: {message}");
+        _logger.Info("Message received: " + message.Content);
     }
 }
