@@ -8,4 +8,5 @@ public interface IDiscordBot
     Task LogAsync(LogMessage message);
     Task ReadyAsync();
     Task MessageReceivedAsync(SocketMessage message);
+    Task InstallCommandsAsync();
 }
