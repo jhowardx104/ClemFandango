@@ -396,4 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-secrets.json
+
+ClemFandangoBot/ClemFandangoBot/Secrets/
+ClemFandangoBot/ClemFandangoBot/Secrets/discord.json
