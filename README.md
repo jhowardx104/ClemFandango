@@ -17,3 +17,6 @@ A Discord bot that helps me out with things
     - Get info about GMs/nightfall/raid/trials
 4. Interact with an SSH endpoint for sources
     - Bounce a server in a game server
+5. Fuuuuuuuu Easter Egg
+6. Dice roller
+    - Average for dice rolls - [Formula](https://www.omnicalculator.com/statistics/dice-average#what-is-average)
