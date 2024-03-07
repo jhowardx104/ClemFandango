@@ -5,19 +5,19 @@ namespace ClemFandangoBot.Services.Commands;
 
 public class DiceModule: InteractionModuleBase
 {
-    const string DiceRollPattern = @"^\d+d\d+([+-x/]\d+)?$";
+    const string DiceRollPattern = @"^\d+d\d+$";
+    const string DiceRollWithModifierPattern = @"^\d+d\d+([+-x/]\d+)?$";
     
     [SlashCommand("roll", "Roll some dice.")]
     public async Task RollDice(string diceRoll)
     {
-        if (!Regex.IsMatch(diceRoll, DiceRollPattern))
+        diceRoll = diceRoll.Replace(" ", "");
+        if (!Regex.IsMatch(diceRoll, DiceRollWithModifierPattern))
         {
             await RespondAsync("Invalid dice roll format. Please use the format `1d20` or `1d20+5`.");
             return;
         }
-        
-        //Split the dice roll into the dice roll (ex. 1d20) and the modifier (ex. +/-/x/÷ 5)
-        diceRoll = diceRoll.Replace(" ", "");
+
         var operationIndex = diceRoll.IndexOfAny(new [] { '+', '-', 'x', '/' });
 
         var operation = "";
@@ -36,6 +36,7 @@ public class DiceModule: InteractionModuleBase
         var diceParts = dice.Split('d');
         var numberOfDice = int.Parse(diceParts[0]);
         var diceSize = int.Parse(diceParts[1]);
+        var diceAverage = (diceSize + 1) * 0.5 * numberOfDice;
         
         var diceRolls = new List<int>();
         var random = new Random();
@@ -53,6 +54,24 @@ public class DiceModule: InteractionModuleBase
             _ => diceRolls.Sum()
         };
 
-        await RespondAsync($"You rolled {diceRoll}! The result is {result} (Rolls: {String.Join(",", diceRolls)}).");
+        await RespondAsync($"You rolled {diceRoll} (Avg. {diceAverage})! The result is {result} (Rolls: {String.Join(",", diceRolls)}).");
+    }
+    
+    [SlashCommand("dice-average", "Get the average roll for a given dice.")]
+    public async Task DiceAverage(string diceRoll)
+    {
+        diceRoll = diceRoll.Replace(" ", "");
+        if (!Regex.IsMatch(diceRoll, DiceRollPattern))
+        {
+            await RespondAsync("Invalid dice roll format. Please use the format `1d20`.");
+            return;
+        }
+
+        var diceParts = diceRoll.Split('d');
+        var numberOfDice = int.Parse(diceParts[0]);
+        var diceSize = int.Parse(diceParts[1]);
+        var diceAverage = (diceSize + 1) * 0.5 * numberOfDice;
+        
+        await RespondAsync($"The average roll for {diceRoll} is {diceAverage}.");
     }
 }
