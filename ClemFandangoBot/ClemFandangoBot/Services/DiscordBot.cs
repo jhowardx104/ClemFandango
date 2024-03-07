@@ -89,6 +89,11 @@ public class DiscordBot: IDiscordBot
                 var commandBuilder = new SlashCommandBuilder();
                 commandBuilder.WithName(command.Name);
                 commandBuilder.WithDescription(command.Description);
+                foreach(var param in command.Parameters)
+                {
+                    commandBuilder.AddOption(param.Name, param.DiscordOptionType!.Value, param.Description, param.IsRequired);
+                }
+                
                 await guild.CreateApplicationCommandAsync(commandBuilder.Build());
             }
         }
