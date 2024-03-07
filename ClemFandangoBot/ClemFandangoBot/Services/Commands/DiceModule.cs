@@ -8,6 +8,14 @@ public class DiceModule: InteractionModuleBase
     const string DiceRollPattern = @"^\d+d\d+$";
     const string DiceRollWithModifierPattern = @"^\d+d\d+([+-x/]\d+)?$";
     
+    [SlashCommand("coin-flip", "Flip a coin.")]
+    public async Task CoinFlip()
+    {
+        var random = new Random();
+        var result = random.Next(0, 2) == 0 ? "Heads" : "Tails";
+        await RespondAsync($"You flipped a coin! The result is {result}.");
+    }
+    
     [SlashCommand("roll", "Roll some dice.")]
     public async Task RollDice(string diceRoll)
     {
