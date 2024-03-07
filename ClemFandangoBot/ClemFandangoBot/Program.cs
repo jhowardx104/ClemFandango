@@ -2,7 +2,6 @@
 
 using ClemFandangoBot;
 using ClemFandangoBot.Services;
-using Discord;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();

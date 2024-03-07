@@ -2,7 +2,6 @@
 using ClemFandango.Common.Logging.Interfaces;
 using ClemFandangoBot.Options;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 
@@ -14,13 +13,15 @@ public class DiscordBot: IDiscordBot
     private readonly DiscordSocketClient _client;
     private readonly InteractionService _interactionService;
     private readonly ILogger _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public DiscordBot(DiscordOptions options, DiscordSocketClient client, InteractionService interactionService, ILogger logger)
+    public DiscordBot(DiscordOptions options, DiscordSocketClient client, InteractionService interactionService, ILogger logger, IServiceProvider serviceProvider)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _interactionService = interactionService ?? throw new ArgumentNullException(nameof(interactionService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         InitializeClientAsync().Wait();
     }
 
@@ -62,15 +63,35 @@ public class DiscordBot: IDiscordBot
     public async Task ReadyAsync()
     {
         _logger.Info("Discord client is ready.");
+        await RegisterSlashCommands();
     }
     
-    public Task SlashCommandHandler(SocketSlashCommand command)
+    public async Task SlashCommandHandler(SocketSlashCommand command)
     {
-        throw new NotImplementedException();
+        var context = new InteractionContext(_client, command);
+        await _interactionService.ExecuteCommandAsync(context, _serviceProvider);
     }
 
     public void Dispose()
     {
         _client.Dispose();
+    }
+
+    private async Task RegisterSlashCommands()
+    {
+        //Get all values marked with attribute SlashCommand that are in the assembly
+        await _interactionService.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), services: _serviceProvider);
+        
+        foreach (var guild in _client.Guilds)
+        {
+            foreach(var command in _interactionService.SlashCommands)
+            {
+                var commandBuilder = new SlashCommandBuilder();
+                commandBuilder.WithName(command.Name);
+                commandBuilder.WithDescription(command.Description);
+                await guild.CreateApplicationCommandAsync(commandBuilder.Build());
+            }
+        }
+        
     }
 }

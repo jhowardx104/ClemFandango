@@ -47,9 +47,4 @@ public static class Startup
         
         services.AddSingleton<IDiscordBot, DiscordBot>();
     }
-    
-    private static void RegisterSlashCommands(this IServiceCollection services)
-    {
-        
-    }
 }
