@@ -1,6 +1,12 @@
 # Clem Fandango
 A Discord bot that helps me out with things
 
+## Features
+
+- Dice Rolling
+    - roll - Rolls a dice role (Formatting: 2d10 or 3d8+5)
+    - dice-average - Gives the dice average for a given roll. (Formatting: 2d10)
+
 ## Informative Links:
 
 [Discord.Net](https://discordnet.dev/guides/getting_started/first-bot.html)  
