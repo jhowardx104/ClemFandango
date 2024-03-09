@@ -26,4 +26,3 @@ A Discord bot that helps me out with things
     - Bounce a server in a game server
 5. Fuuuuuuuu Easter Egg
 6. Runescape API support
-7. Record audio
