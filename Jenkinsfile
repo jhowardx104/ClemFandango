@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                script {
+                    docker.build("clem-fandango-bot:${env.BUILD_NUMBER}")
+                }
             }
         }
         stage('Test') {
