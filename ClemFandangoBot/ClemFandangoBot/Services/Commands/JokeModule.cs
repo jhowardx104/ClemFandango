@@ -36,7 +36,21 @@ public class JokeModule: InteractionModuleBase
         await SendFUUUUUU();
     }
 
-    private async Task BuildRandomWhoIsThat(string username)
+    [SlashCommand("insult", "Insult someone.")]
+    public async Task Insult(IUser user)
+    {
+        if (_insults.ContainsKey(user.Username))
+        {
+            await BuildRandomWhoIsThat(user.Username, true, user);
+            BadLuckCounter++;
+            return;
+        }
+
+        await RespondAsync($"I don't know who {user.Mention} is, but I'm sure they're horrible.");
+        BadLuckCounter++;
+    }
+
+    private async Task BuildRandomWhoIsThat(string username, bool isInsult = false, IUser? user = null)
     {
         var rand = new Random().Next(0, _insults[username].Count);
 
@@ -46,7 +60,12 @@ public class JokeModule: InteractionModuleBase
         }
         else
         {
-            await RespondAsync(_insults[username][rand]);
+            var insultMessage = _insults[username][rand];
+            if (isInsult)
+            {
+                insultMessage = $"{user!.Mention}, {insultMessage}";
+            }
+            await RespondAsync(insultMessage);
         }
     }
 
