@@ -103,6 +103,7 @@ public static class Dictionaries
             {
                 "You survived a cult... Just to wind up *here.*",
                 "Crochet a little sweater for my last fucking brain cell.",
+                "Incoming folklore dump in 3... 2... 1..."
             }
         }
     };
