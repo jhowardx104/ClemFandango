@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using ClemFandangoBot.Services.Commands.Data;
+using Discord;
 using Discord.Interactions;
 
 namespace ClemFandangoBot.Services.Commands;
@@ -6,22 +7,15 @@ namespace ClemFandangoBot.Services.Commands;
 public class JokeModule: InteractionModuleBase
 {
     private static int BadLuckCounter = 0;
-    private readonly List<string> _insults = new()
-    {
-        "Try again later, Power Bottom.",
-        "There are guns other than Osteo Striga.",
-        "Did you know that Hunters are one of three classes available in the game, Destiny 2?",
-        "Stop helping me."
-    };
+    
+    private readonly Dictionary<string, List<string>> _insults = Dictionaries.InsultDictionary;
     
     [SlashCommand("whoami", "Find out who this bot is.")]
     public async Task WhoIsThat()
     {
-        if (Context.User.Username == "invisibleninja92" 
-            || Context.User.Username == "jkmstr101"
-            || Context.User.Username == "its_eso")
+        if (_insults.ContainsKey(Context.User.Username))
         {
-            await BuildRandomWhoIsThat();
+            await BuildRandomWhoIsThat(Context.User.Username);
             BadLuckCounter++;
             return;
         }
@@ -35,18 +29,24 @@ public class JokeModule: InteractionModuleBase
         await RespondAsync($"Hello {Context.User.Username}, this is Clem Fandango. Can you hear me?");
         BadLuckCounter++;
     }
-
-    private async Task BuildRandomWhoIsThat()
+    
+    [SlashCommand("fuuuuuuuuuuu", "Frustration.")]
+    public async Task FUUUUUUUUUU()
     {
-        var rand = new Random().Next(0, _insults.Count);
+        await SendFUUUUUU();
+    }
 
-        if (rand == _insults.Count || BadLuckCounter > 6)
+    private async Task BuildRandomWhoIsThat(string username)
+    {
+        var rand = new Random().Next(0, _insults[username].Count);
+
+        if (rand == _insults[username].Count || BadLuckCounter > 6)
         {
             await SendFUUUUUU();
         }
         else
         {
-            await RespondAsync(_insults[rand]);
+            await RespondAsync(_insults[username][rand]);
         }
     }
 
