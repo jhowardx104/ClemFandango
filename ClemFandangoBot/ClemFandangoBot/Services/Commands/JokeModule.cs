@@ -1,9 +1,11 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
 
 namespace ClemFandangoBot.Services.Commands;
 
 public class JokeModule: InteractionModuleBase
 {
+    private static int BadLuckCounter = 0;
     private readonly List<string> _insults = new()
     {
         "Try again later, Power Bottom.",
@@ -20,22 +22,41 @@ public class JokeModule: InteractionModuleBase
             || Context.User.Username == "its_eso")
         {
             await BuildRandomWhoIsThat();
+            BadLuckCounter++;
+            return;
+        }
+
+        if (BadLuckCounter > 6)
+        {
+            await SendFUUUUUU();
             return;
         }
         
         await RespondAsync($"Hello {Context.User.Username}, this is Clem Fandango. Can you hear me?");
+        BadLuckCounter++;
     }
 
     private async Task BuildRandomWhoIsThat()
     {
-        await RespondAsync(GetRandomInsult());
+        var rand = new Random().Next(0, _insults.Count);
+
+        if (rand == _insults.Count || BadLuckCounter > 6)
+        {
+            await SendFUUUUUU();
+        }
+        else
+        {
+            await RespondAsync(_insults[rand]);
+        }
     }
 
-    private string GetRandomInsult()
+    private async Task SendFUUUUUU()
     {
-        var rand = new Random().Next(0, _insults.Count - 1);
-        return _insults[rand];
+        var embBuilder = new EmbedBuilder()
+            .WithImageUrl("https://i.makeagif.com/media/2-03-2021/925pfm.gif")
+            .Build();
+        
+        await RespondAsync(embeds: new [] { embBuilder });
+        BadLuckCounter = 0;
     }
-    
-    
 }
