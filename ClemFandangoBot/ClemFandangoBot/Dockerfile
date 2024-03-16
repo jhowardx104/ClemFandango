@@ -3,6 +3,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+RUN ls -al .
 COPY ["./ClemFandangoBot/ClemFandangoBot/ClemFandangoBot.csproj", "ClemFandangoBot/"]
 COPY ["./ClemFandangoBot/ClemFandango.Common/ClemFandango.Common.csproj", "ClemFandango.Common/"]
 RUN dotnet restore "ClemFandangoBot/ClemFandangoBot.csproj"
