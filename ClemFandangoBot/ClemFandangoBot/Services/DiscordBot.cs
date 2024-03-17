@@ -91,7 +91,36 @@ public class DiscordBot: IDiscordBot
                 commandBuilder.WithDescription(command.Description);
                 foreach(var param in command.Parameters)
                 {
-                    commandBuilder.AddOption(param.Name, param.DiscordOptionType!.Value, param.Description, param.IsRequired);
+                    if (param.ParameterType.IsEnum)
+                    {
+                        var slashCommandOptionBuilder = new SlashCommandOptionBuilder()
+                            .WithName(param.Name)
+                            .WithDescription(param.Description)
+                            .WithRequired(param.IsRequired)
+                            .WithType(ApplicationCommandOptionType.String);
+                        
+                        foreach (var value in Enum.GetValues(param.ParameterType))
+                        {
+                            // see if value has ChoiceDisplay attribute
+                            var memberInfo = param.ParameterType.GetMember(value.ToString());
+                            var attributes = memberInfo[0].GetCustomAttributes(typeof(ChoiceDisplayAttribute), false);
+                            if (attributes.Length > 0)
+                            {
+                                var choiceDisplayAttribute = (ChoiceDisplayAttribute)attributes[0];
+                                slashCommandOptionBuilder.AddChoice(choiceDisplayAttribute.Name, value.ToString());
+                            }
+                            else
+                            {
+                                slashCommandOptionBuilder.AddChoice(value.ToString(), value.ToString());
+                            }
+                        }
+                        
+                        commandBuilder.AddOption(slashCommandOptionBuilder);
+                    }
+                    else
+                    {
+                        commandBuilder.AddOption(param.Name, param.DiscordOptionType!.Value, param.Description, param.IsRequired);
+                    }
                 }
                 
                 await guild.CreateApplicationCommandAsync(commandBuilder.Build());
