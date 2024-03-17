@@ -1,8 +1,12 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using ClemFandango.Common.OAuth.DependencyInjection;
+using ClemFandangoBot.ApiClients.SpotifyApiClient;
+using Microsoft.Extensions.DependencyInjection;
 
-using ClemFandangoBot.ApiClients.BungieNetApiClient;
+var services = new ServiceCollection();
 
-var client = new BungieNetApiClient();
-var manifest = await client.GetManifestAsync();
-Console.WriteLine($"Manifest version: {manifest?.Version}");
-Console.WriteLine($"MobileAssetContentPath: {manifest?.MobileAssetContentPath}");
+var provider = services.BuildServiceProvider();
+var spotifyHttpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("SpotifyApiClient");
+var client = new SpotifyApiClient(spotifyHttpClient);
+var episode = await client.GetLatestEpisode("0SclJGlu8h74Q7NGkqO1UA");
+Console.WriteLine("Episode: " + episode.Name);

@@ -1,5 +1,7 @@
 ﻿using ClemFandango.Common.DependencyInjection;
 using ClemFandango.Common.IO.Json;
+using ClemFandango.Common.OAuth.DependencyInjection;
+using ClemFandangoBot.ApiClients.SpotifyApiClient;
 using ClemFandangoBot.Options;
 using ClemFandangoBot.Services;
 using Discord;
@@ -18,11 +20,31 @@ public static class Startup
         var discordOptions = JsonParser.Parse<DiscordOptions>("./Secrets/discord.json");
         services.AddSingleton(discordOptions);
         
+        var spotifyApiOptions = JsonParser.Parse<SpotifyApiOptions>("./Secrets/spotify.json");
+        services.AddSingleton(spotifyApiOptions);
+        
         /* REGISTER LOGGER */
         services.AddConsoleLogger();
         
         /* REGISTER DISCORD BOT */
         services.ConfigureDiscordBot();
+        
+        /* REGISTER SPOTIFY API CLIENT */
+        services.ConfigureSpotifyApiClient(spotifyApiOptions);
+    }
+    
+    private static void ConfigureSpotifyApiClient(this IServiceCollection services, SpotifyApiOptions spotifyApiOptions)
+    {
+        services.AddHttpClient<SpotifyApiClient>((_, client) =>
+            {
+                client.BaseAddress = new Uri(spotifyApiOptions.ApiUrl);
+            })
+            .AddOAuthDelegatingHandler(
+                spotifyApiOptions.AuthUrl, 
+                spotifyApiOptions.ClientId, 
+                spotifyApiOptions.ClientSecret);
+        
+        services.AddScoped(sp => new SpotifyApiClient(sp.GetRequiredService<IHttpClientFactory>().CreateClient("SpotifyApiClient")));
     }
 
     private static void ConfigureDiscordBot(this IServiceCollection services)
