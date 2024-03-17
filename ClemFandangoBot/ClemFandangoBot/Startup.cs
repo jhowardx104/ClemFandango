@@ -1,11 +1,11 @@
 ﻿using ClemFandango.Common.DependencyInjection;
 using ClemFandango.Common.IO.Json;
 using ClemFandango.Common.OAuth.DependencyInjection;
+using ClemFandangoBot.ApiClients.BungieNetApiClient;
 using ClemFandangoBot.ApiClients.SpotifyApiClient;
 using ClemFandangoBot.Options;
 using ClemFandangoBot.Services;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +23,9 @@ public static class Startup
         var spotifyApiOptions = JsonParser.Parse<SpotifyApiOptions>("./Secrets/spotify.json");
         services.AddSingleton(spotifyApiOptions);
         
+        var bungieNetApiOptions = JsonParser.Parse<BungieNetApiOptions>("./Secrets/bungie.json");
+        services.AddSingleton(bungieNetApiOptions);
+        
         /* REGISTER LOGGER */
         services.AddConsoleLogger();
         
@@ -31,6 +34,20 @@ public static class Startup
         
         /* REGISTER SPOTIFY API CLIENT */
         services.ConfigureSpotifyApiClient(spotifyApiOptions);
+        
+        /* REGISTER BUNGIE.NET API CLIENT */
+        services.ConfigureBungieNetApiClient(bungieNetApiOptions);
+    }
+    
+    private static void ConfigureBungieNetApiClient(this IServiceCollection services, BungieNetApiOptions bungieNetApiOptions)
+    {
+        services.AddHttpClient<BungieNetApiClient>((_, client) =>
+            {
+                client.BaseAddress = new Uri(bungieNetApiOptions.BaseUrl);
+                client.DefaultRequestHeaders.Add("X-API-Key", bungieNetApiOptions.ApiKey);
+            });
+        
+        services.AddScoped(sp => new BungieNetApiClient(sp.GetRequiredService<IHttpClientFactory>().CreateClient("BungieNetApiClient")));
     }
     
     private static void ConfigureSpotifyApiClient(this IServiceCollection services, SpotifyApiOptions spotifyApiOptions)
