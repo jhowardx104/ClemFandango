@@ -1,19 +1,23 @@
-﻿using ClemFandangoBot.Services.Commands.Data;
+﻿using ClemFandango.Common.CouchDb.Documents;
+using ClemFandango.Common.CouchDb.Repositories;
 using Discord;
 using Discord.Interactions;
 
 namespace ClemFandangoBot.Services.Commands;
 
-public class JokeModule: InteractionModuleBase
+public class JokeModule(IInsultDictionaryRepository insultDictionaryRepository) : InteractionModuleBase
 {
     private static int BadLuckCounter = 0;
     
-    private readonly Dictionary<string, List<string>> _insults = Dictionaries.InsultDictionary;
-    
+    //private readonly Dictionary<string, List<string>> _insults = Dictionaries.InsultDictionary;
+    private readonly IInsultDictionaryRepository _insultDictionaryRepository = insultDictionaryRepository ?? throw new ArgumentNullException(nameof(insultDictionaryRepository));
+
     [SlashCommand("whoami", "Find out who this bot is.")]
     public async Task WhoIsThat()
     {
-        if (_insults.ContainsKey(Context.User.Username))
+        var insults = await GetInsults();
+        
+        if (insults.Data.ContainsKey(Context.User.Username))
         {
             await BuildRandomWhoIsThat(Context.User.Username);
             BadLuckCounter++;
@@ -39,7 +43,8 @@ public class JokeModule: InteractionModuleBase
     [SlashCommand("insult", "Insult someone.")]
     public async Task Insult(IUser user)
     {
-        if (_insults.ContainsKey(user.Username))
+        var insults = await GetInsults();
+        if (insults.Data.ContainsKey(user.Username))
         {
             await BuildRandomWhoIsThat(user.Username, true, user);
             BadLuckCounter++;
@@ -52,15 +57,16 @@ public class JokeModule: InteractionModuleBase
 
     private async Task BuildRandomWhoIsThat(string username, bool isInsult = false, IUser? user = null)
     {
-        var rand = new Random().Next(0, _insults[username].Count);
+        var insults = await GetInsults();
+        var rand = new Random().Next(0, insults.Data[username].Count);
 
-        if (rand == _insults[username].Count || BadLuckCounter > 6)
+        if (rand == insults.Data[username].Count || BadLuckCounter > 6)
         {
             await SendFUUUUUU();
         }
         else
         {
-            var insultMessage = _insults[username][rand];
+            var insultMessage = insults.Data[username][rand];
             if (isInsult)
             {
                 insultMessage = $"{user!.Mention}, {insultMessage}";
@@ -77,5 +83,15 @@ public class JokeModule: InteractionModuleBase
         
         await RespondAsync(embeds: new [] { embBuilder });
         BadLuckCounter = 0;
+    }
+
+    private async Task<InsultDictionary> GetInsults()
+    {
+        var insultDictionary = await _insultDictionaryRepository.GetLatestInsultDictionary();
+        if (insultDictionary is null)
+        {
+            throw new Exception("Insult dictionary not populated yet found.");
+        }
+        return insultDictionary;
     }
 }

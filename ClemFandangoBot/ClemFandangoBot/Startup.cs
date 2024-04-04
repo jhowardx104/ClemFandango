@@ -1,4 +1,5 @@
-﻿using ClemFandango.Common.DependencyInjection;
+﻿using ClemFandango.Common.CouchDb;
+using ClemFandango.Common.DependencyInjection;
 using ClemFandango.Common.IO.Json;
 using ClemFandango.Common.OAuth.DependencyInjection;
 using ClemFandangoBot.ApiClients.BungieNetApiClient;
@@ -26,6 +27,9 @@ public static class Startup
         var bungieNetApiOptions = JsonParser.Parse<BungieNetApiOptions>("./Secrets/bungie.json");
         services.AddSingleton(bungieNetApiOptions);
         
+        var couchDbOptions = JsonParser.Parse<CouchDbOptions>("./Secrets/couchdb.json");
+        services.AddSingleton(couchDbOptions);
+        
         /* REGISTER LOGGER */
         services.AddConsoleLogger();
         
@@ -37,6 +41,9 @@ public static class Startup
         
         /* REGISTER BUNGIE.NET API CLIENT */
         services.ConfigureBungieNetApiClient(bungieNetApiOptions);
+        
+        /* REGISTER COUCHDB */
+        services.AddCouchDbContext(couchDbOptions);
     }
     
     private static void ConfigureBungieNetApiClient(this IServiceCollection services, BungieNetApiOptions bungieNetApiOptions)
