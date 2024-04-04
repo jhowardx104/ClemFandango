@@ -11,7 +11,8 @@ A Discord bot that helps me out with things
 
 [Discord.Net](https://discordnet.dev/guides/getting_started/first-bot.html)  
 [Spotify API](https://developer.spotify.com/documentation/web-api/tutorials/getting-started)  
-[Jenkins](https://www.jenkins.io/)
+[Jenkins](https://www.jenkins.io/)  
+[CouchDb.NET](https://github.com/matteobortolazzo/couchdb-net)  
 
 ## Feature Ideas
 
