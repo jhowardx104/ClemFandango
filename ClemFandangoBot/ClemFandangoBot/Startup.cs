@@ -1,4 +1,5 @@
-﻿using ClemFandango.Common.DependencyInjection;
+﻿using ClemFandango.Common.Caching;
+using ClemFandango.Common.DependencyInjection;
 using ClemFandango.Common.Docker;
 using ClemFandango.Common.Docker.Models;
 using ClemFandango.Common.IO.Json;
@@ -36,6 +37,9 @@ public static class Startup
         
         /* REGISTER DISCORD BOT */
         services.ConfigureDiscordBot();
+        
+        /* REGISTER CACHE SERVICE */
+        services.AddInMemoryCaching();
         
         /* REGISTER SPOTIFY API CLIENT */
         services.ConfigureSpotifyApiClient(spotifyApiOptions);
