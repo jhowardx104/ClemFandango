@@ -1,8 +1,8 @@
 ﻿using ClemFandango.Common.Caching;
-using ClemFandango.Common.DependencyInjection;
 using ClemFandango.Common.Docker;
 using ClemFandango.Common.Docker.Models;
 using ClemFandango.Common.IO.Json;
+using ClemFandango.Common.Logging;
 using ClemFandango.Common.OAuth.DependencyInjection;
 using ClemFandangoBot.ApiClients.BungieNetApiClient;
 using ClemFandangoBot.ApiClients.SpotifyApiClient;
