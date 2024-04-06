@@ -26,7 +26,49 @@ public class DockerModule(IDockerService dockerService): InteractionModuleBase
         }
     }
     
-    [SlashCommand("bounce", "Bounce a container.")]
+    [SlashCommand("start-container", "Start a container.")]
+    public async Task StartContainer(Dictionaries.DockerContainer container)
+    {
+        var containerName = _containerNames[container];
+        if (DockerAdmins.Any(x => x == Context.User.Username))
+        {
+            await RespondAsync("Starting container. This may take a moment.", ephemeral: true);
+            if(!await _docker.StartContainerAsync(containerName))
+            {
+                await FollowupAsync($"Failed to start container {containerName}.");
+                return;
+            }
+        
+            await FollowupAsync($"Container {containerName} has been started.");
+        }
+        else
+        {
+            await RespondAsync("You do not have permission to start containers.");
+        }
+    }
+    
+    [SlashCommand("stop-container", "Stop a container.")]
+    public async Task StopContainer(Dictionaries.DockerContainer container)
+    {
+        var containerName = _containerNames[container];
+        if (DockerAdmins.Any(x => x == Context.User.Username))
+        {
+            await RespondAsync("Stopping container. This may take a moment.", ephemeral: true);
+            if(!await _docker.StopContainerAsync(containerName))
+            {
+                await FollowupAsync($"Failed to stop container {containerName}.");
+                return;
+            }
+        
+            await FollowupAsync($"Container {containerName} has been stopped.");
+        }
+        else
+        {
+            await RespondAsync("You do not have permission to stop containers.");
+        }
+    }
+    
+    [SlashCommand("bounce-container", "Bounce a container.")]
     public async Task BounceContainer(Dictionaries.DockerContainer container)
     {
         var containerName = _containerNames[container];
