@@ -84,6 +84,7 @@ public class DiscordBot: IDiscordBot
         
         foreach (var guild in _client.Guilds)
         {
+            var currentGuildCommands = await guild.GetApplicationCommandsAsync();
             foreach(var command in _interactionService.SlashCommands)
             {
                 var commandBuilder = new SlashCommandBuilder();
@@ -122,6 +123,7 @@ public class DiscordBot: IDiscordBot
                         commandBuilder.AddOption(param.Name, param.DiscordOptionType!.Value, param.Description, param.IsRequired);
                     }
                 }
+                
                 
                 await guild.CreateApplicationCommandAsync(commandBuilder.Build());
             }
