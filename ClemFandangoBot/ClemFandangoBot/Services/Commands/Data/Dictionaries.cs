@@ -141,15 +141,12 @@ public static class Dictionaries
     public static readonly Dictionary<DockerContainer, string> DockerContainerNames = new()
     {
         { DockerContainer.Palworld, "/Palworld" },
-        { DockerContainer.ClemFandangoProduction, "/ClemFandango-Prod" }
     };
 
     public enum DockerContainer
     {
         [ChoiceDisplay("Palworld")]
         Palworld = 0,
-        [ChoiceDisplay("Clem Fandango Production")]
-        ClemFandangoProduction = 1,
     }
 
     public enum Nightfalls
