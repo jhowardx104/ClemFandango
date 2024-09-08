@@ -137,6 +137,17 @@ public static class Dictionaries
             }
         }
     };
+    
+    public static readonly Dictionary<DockerContainer, string> DockerContainerNames = new()
+    {
+        { DockerContainer.Palworld, "/Palworld" },
+    };
+
+    public enum DockerContainer
+    {
+        [ChoiceDisplay("Palworld")]
+        Palworld = 0,
+    }
 
     public enum Nightfalls
     {

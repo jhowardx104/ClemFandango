@@ -2,9 +2,9 @@
 using ClemFandango.Common.Logging.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ClemFandango.Common.DependencyInjection;
+namespace ClemFandango.Common.Logging;
 
-public static class LoggingDependencyInjectionExtensions
+public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddConsoleLogger(this IServiceCollection services)
     {
